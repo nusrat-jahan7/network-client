@@ -1,14 +1,39 @@
+"use client";
+
+import { AuthContext } from "@/context/AuthProvider";
+import { signUpSchema } from "@/schema";
 import { useFormik } from "formik";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
 const initialValues = {
-  name: "",
-  email: "",
-  password: "",
+  name: "Nusrat Jahan",
+  email: "nusrat@gmail.com",
+  password: "12345678",
 };
 
 const Register = () => {
-  const formik = useFormik({ initialValues });
+  const router = useRouter();
+  const { signUp, setLoading } = useContext(AuthContext);
+  const formik = useFormik({
+    initialValues,
+    validationSchema: signUpSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      const { name, email, password } = values;
+      signUp(email, password)
+        .then((result) => {
+          console.log(result);
+          formik.resetForm();
+          router.push("/");
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    },
+  });
   return (
     <div className="py-20">
       <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white font-poppins rounded-lg shadow-lg">
@@ -22,7 +47,7 @@ const Register = () => {
           Register
         </h3>
 
-        <form className="mt-6">
+        <form onSubmit={formik.handleSubmit} className="mt-6">
           <div>
             <label htmlFor="username" className="block text-sm text-gray-800">
               Name
@@ -33,6 +58,9 @@ const Register = () => {
               name="name"
               placeholder="your name"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
           </div>
 
@@ -46,6 +74,9 @@ const Register = () => {
               name="email"
               placeholder="example@gmail.com"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
           </div>
 
@@ -62,6 +93,9 @@ const Register = () => {
               name="password"
               placeholder="•••••••••"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
           </div>
 
