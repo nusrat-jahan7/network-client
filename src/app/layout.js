@@ -15,9 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="light">
       <body className={inter.className}>
-        <Navbar />
-        <GlobalWrapper>{children}</GlobalWrapper>
-        <Footer />
+        <GlobalWrapper>
+          <Navbar />
+          {children}
+          <Footer />
+        </GlobalWrapper>
       </body>
     </html>
   );

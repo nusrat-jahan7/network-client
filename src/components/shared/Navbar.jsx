@@ -3,6 +3,8 @@ import Image from "next/image";
 import logo from "../../../public/images/logo.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
 
 const navItems = [
   {
@@ -33,6 +35,11 @@ const navItems = [
 
 const Navbar = () => {
   const pathName = usePathname();
+  const { user, logOut } = useContext(AuthContext);
+
+  const handleLogOut = () => {
+    logOut();
+  };
 
   return (
     <div className="navbar bg-base-100 px-5 py-3 shadow-md">
@@ -90,12 +97,30 @@ const Navbar = () => {
             </ul>
           </div>
           <div className="pl-4">
-            <Link
-              href={"/login"}
-              className="px-4 py-2 rounded-lg bg-blue-500 font-semibold text-white"
-            >
-              Login
-            </Link>
+            {user?.email ? (
+              <div className="flex items-center gap-3">
+                <Image
+                  className="rounded-full w-12 h-12"
+                  src={user?.photoURL}
+                  width={200}
+                  height={200}
+                  alt=""
+                />
+                <button
+                  onClick={() => handleLogOut()}
+                  className="px-4 py-2 rounded-lg bg-red-500 font-semibold text-white"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href={"/login"}
+                className="px-4 py-2 rounded-lg bg-blue-500 font-semibold text-white"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

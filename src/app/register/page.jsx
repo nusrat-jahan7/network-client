@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 
 const initialValues = {
   name: "Nusrat Jahan",
@@ -15,7 +16,7 @@ const initialValues = {
 
 const Register = () => {
   const router = useRouter();
-  const { signUp, setLoading } = useContext(AuthContext);
+  const { signUp, setLoading, editProfile } = useContext(AuthContext);
   const formik = useFormik({
     initialValues,
     validationSchema: signUpSchema,
@@ -25,12 +26,17 @@ const Register = () => {
       signUp(email, password)
         .then((result) => {
           console.log(result);
-          formik.resetForm();
-          router.push("/");
+        })
+        .then(() => {
+          editProfile({ displayName: name, photoURL: image }).then(() => {
+            formik.resetForm();
+            toast.success("Account created successfully!");
+            router.push("/");
+          });
         })
         .catch((error) => {
           setLoading(false);
-          console.log(error);
+          toast.error("Something Wrong!!");
         });
     },
   });
@@ -38,7 +44,7 @@ const Register = () => {
     <div className="py-20">
       <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white font-poppins rounded-lg shadow-lg">
         <div>
-          <h1 className="text-lg text-center text-blue-500">
+          <h1 className="text-center text-blue-500">
             {"Do'nt Have An Account?"}
           </h1>
         </div>
