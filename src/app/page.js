@@ -1,9 +1,28 @@
+"use client";
 import Banner from "@/components/Banner";
+import JobCategory from "@/components/JobCategory";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function Home() {
+  const client = useAxiosPublic();
+  const [filter, setFilter] = useState("all-job");
+  // console.log(filter);
+
+  const { data, isLoading } = useQuery({
+    queryKey: [`job/${filter}`],
+    queryFn: () =>
+      filter === "all-job"
+        ? client.get("/job").then(({ data }) => data.result)
+        : client.get(`/job?type=${filter}`).then(({ data }) => data.result),
+  });
+  if (isLoading) "loading";
+  // console.log(data);
   return (
     <main>
       <Banner />
+      <JobCategory data={data} isLoading={isLoading} setFilter={setFilter} />
     </main>
   );
 }
