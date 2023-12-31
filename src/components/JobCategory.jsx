@@ -30,7 +30,7 @@ const JobCategory = ({ data, isLoading, setFilter }) => {
   ];
 
   return (
-    <div>
+    <div className="mt-16">
       <SectionTitle
         heading={"The Available Jobs"}
         subHeading={
@@ -38,7 +38,7 @@ const JobCategory = ({ data, isLoading, setFilter }) => {
         }
       />
 
-      <Tabs className={"md:w-4/12 mx-auto text-center mt-8 mb-3"}>
+      <Tabs className={"max-w-lg mx-auto"}>
         <TabList>
           {category.map((el, index) => (
             <Tab key={index} onClick={() => setFilter(el.value)}>
@@ -46,19 +46,17 @@ const JobCategory = ({ data, isLoading, setFilter }) => {
             </Tab>
           ))}
         </TabList>
-
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10">
-            {data?.map((job) => (
-              <TabPanel>
-                <JobCard key={job._id} job={job} />
-              </TabPanel>
-            ))}
-          </div>
-        )}
       </Tabs>
+
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 max-w-7xl mx-auto my-8 px-5">
+          {data?.map((job) => (
+            <JobCard key={job._id} job={job} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
